@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<manifest xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" identifier="com.example.myscormproject" version="1.0" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <organizations default="org1">
+    <organization identifier="org1">
+      <title>My SCORM Project</title>
+      <item identifier="item1" identifierref="resource1">
+        <title>Launch My Content</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="resource1" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="flappybird.js"/>
+      <file href="flappybird_advanced.js"/>
+      <file href="index.html"/>
+      <file href="SCORM.py"/>
+      <file href="assets/0.png"/>
+      <file href="assets/1.png"/>
+      <file href="assets/2.png"/>
+      <file href="assets/3.png"/>
+      <file href="assets/4.png"/>
+      <file href="assets/5.png"/>
+      <file href="assets/6.png"/>
+      <file href="assets/7.png"/>
+      <file href="assets/8.png"/>
+      <file href="assets/9.png"/>
+      <file href="assets/background-day.png"/>
+      <file href="assets/background-night.png"/>
+      <file href="assets/base.png"/>
+      <file href="assets/bluebird-downflap.png"/>
+      <file href="assets/bluebird-midflap.png"/>
+      <file href="assets/bluebird-upflap.png"/>
+      <file href="assets/gameover.png"/>
+      <file href="assets/message.png"/>
+      <file href="assets/pipe-green.png"/>
+      <file href="assets/pipe-red.png"/>
+      <file href="assets/redbird-downflap.png"/>
+      <file href="assets/redbird-midflap.png"/>
+      <file href="assets/redbird-upflap.png"/>
+      <file href="assets/yellowbird-downflap.png"/>
+      <file href="assets/yellowbird-midflap.png"/>
+      <file href="assets/yellowbird-upflap.png"/>
+    </resource>
+  </resources>
+</manifest>

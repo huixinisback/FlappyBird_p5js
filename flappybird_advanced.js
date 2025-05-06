@@ -78,9 +78,9 @@ function draw() {
 
   // End game on collision
   if (bird.collides(pipes)|| bird.collides(floor)) {
-    noLoop();
-    gameOverSp = new Sprite((width-192)/2, (height-42)/2, 192 , 42, 'static');
-    gameOverSp.img = gameOver;
+    noLoop()
+    image(gameOver,(width-192)/2, (height-42)/2, 192 , 42);
+
   }
 
 }

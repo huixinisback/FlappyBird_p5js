@@ -5,7 +5,10 @@ let pipes;
 let floor;
 let score = 0;
 
+
 let scoreLabel;
+// Image sprites, sprites that display images.
+let gameOverLabel;
 
 // load the image files first 
 function preload(){
@@ -69,7 +72,7 @@ function draw() {
 
   // increase score if pipe passed
   for (let pipe of pipes) {
-    // compare coordinate
+    // compare x-coordinates of player and pipes
     if (pipe.passed== false && pipe.x + pipe.w / 2 < bird.x - bird.w / 2) {
       pipe.passed = true;
       score++; 
@@ -77,6 +80,7 @@ function draw() {
     
   }
 
+  // change image according to  flying action/ falling
   if (bird.vel.y < -1) {
     bird.img = flapUpImg; // flying upward
     bird.rotation = -30
@@ -87,30 +91,27 @@ function draw() {
     bird.img = flapMidImg; // neutral
     bird.rotation = 0
   }
-  pipes.layer = 0
   
   // End game on collision
   if (bird.collides(pipes)|| bird.collides(floor)) {
-    noLoop();
-    image(gameOver, (width-192)/2, (height-42)/2, 192 , 42);
+    noLoop(); // stops draw() from looping/ running again
+    image(gameOver, (width-192)/2, (height-42)/2, 192 , 42);//showing image for game over
   }
 
-  scoreLabel.text = 'Score: ' + score;
-  scoreLabel.x = camera.x;
-
+  scoreLabel.text = 'Score: ' + score; // update score
+  scoreLabel.x = camera.x; // camera tracking for score
 }
 
 function spawnPipePair() {
-  let gap = 100;
+  let gap = 100; // gap 
   let midY = random(200, height - 200);
-
   let topPipe = new Sprite(bird.x + 300, midY - gap / 2 - 200, 52, 320, 'static');
   let bottomPipe = new Sprite(bird.x + 300, midY + gap / 2 + 200, 52, 320, 'static');
   topPipe.img = pipe
   topPipe.rotation = 180
   bottomPipe.img = pipe;
   topPipe.passed = false; // Add to one pipe per pair (top or bottom)
-
-  pipes.add(topPipe);
-  pipes.add(bottomPipe);
+  pipes.add(topPipe); // add topPipe sprite to group
+  pipes.add(bottomPipe); // add bottomPipe sprite to group
+  pipes.layer = 0; // The new pipes should be drawn at the lowest layer, so the score and floor will show on top.
 }

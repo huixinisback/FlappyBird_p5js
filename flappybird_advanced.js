@@ -6,7 +6,10 @@ let floor;
 let score = 99;
 // store number/score images
 let numberImages = [];
+
+// Image sprites, sprites that display images.
 let scoreDigits;
+let gameOverLabel;
 
 // load the image files first 
 function preload(){
@@ -72,12 +75,14 @@ function draw() {
   
   // increase score if pipe passed
   for (let pipe of pipes) {
+    // compare x-coordinates of player and pipes
     if (pipe.passed== false && pipe.x + pipe.w / 2 < bird.x - bird.w / 2) {
       pipe.passed = true;
       score++; 
     }
   }
 
+  // change image according to  flying action/ falling
   if (bird.vel.y < -1) {
     bird.img = flapUpImg; // flying upward
     bird.rotation = -30
@@ -88,7 +93,7 @@ function draw() {
     bird.img = flapMidImg; // neutral
     bird.rotation = 0
   }
-  pipes.layer = 0
+ 
   drawScore(width / 2, 20, score);
 
   // End game on collision
@@ -105,8 +110,8 @@ function draw() {
 }
 
 function spawnPipePair() {
-  let gap = 100;
-  let midY = random(200, height - 200);
+  let gap = 0;
+  let midY = random(200, height - 200); // random(min, max)
 
   let topPipe = new Sprite(bird.x + 300, midY - gap / 2 - 200, 52, 320, 'static');
   let bottomPipe = new Sprite(bird.x + 300, midY + gap / 2 + 200, 52, 320, 'static');
@@ -114,32 +119,33 @@ function spawnPipePair() {
   topPipe.rotation = 180
   bottomPipe.img = pipe;
   topPipe.passed = false; // Add to one pipe per pair (top or bottom)
-
-  pipes.add(topPipe);
-  pipes.add(bottomPipe);
+  pipes.add(topPipe); // add topPipe sprite to group
+  pipes.add(bottomPipe); // add bottomPipe sprite to group
+  pipes.layer = 0; // The new pipes should be drawn at the lowest layer, so the score and floor will show on top.
 }
 
 function drawScore(x, y, score, digitWidth = 24, digitHeight = 36) {
   // Clear old digit sprites
   scoreDigits.removeAll();
-
+  // make it a string so we can get each digit indivisually rather than a value
   let scoreStr = str(score);
+  // total width taken up by all digits
   let totalWidth = scoreStr.length * digitWidth;
+  // starting x coordinates
   let startX = x - totalWidth / 2;
-
+  // loop through each digit
   for (let i = 0; i < scoreStr.length; i++) {
     let digit = int(scoreStr[i]);
-    let digitSprite = new scoreDigits.Sprite(startX + i * digitWidth, y, digitWidth, digitHeight);
-    digitSprite.img = numberImages[digit];
+    let digitSprite = new scoreDigits.Sprite(startX + i * digitWidth, y, digitWidth, digitHeight); // create sprite the size of the digit image
+    digitSprite.img = numberImages[digit]; //get the digit image from the array based on placement order which corresponds to the digit
   }
 
   moveGroup(scoreDigits, camera.x); // keep score centered on camera
 }
 
 function moveGroup(group, targetX, spacing = 24) {
-  let totalWidth = group.length * spacing;
-  let startX = (targetX - totalWidth / 2) + 5;
-
+  let totalWidth = (group.length -1) * spacing;
+  let startX = (targetX - totalWidth/2);
   for (let i = 0; i < group.length; i++) {
     group[i].x = startX + i * spacing;
   }

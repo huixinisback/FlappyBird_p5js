@@ -1,16 +1,21 @@
+// player sprite
 let bird;
+// game variables
 let pipes;
+let floor;
 let score = 0;
 
+let scoreLabel;
 
+// load the image files first 
 function preload(){
-    bg = loadImage('assets/background-day.png');
-    flapUpImg = loadImage('assets/yellowbird-upflap.png');
-    flapDownImg = loadImage('assets/yellowbird-downflap.png');
-    flapMidImg = loadImage('assets/yellowbird-midflap.png');
-    pipe = loadImage('assets/pipe-green.png');
-    base = loadImage('assets/base.png')
-    gameOver = loadImage('assets/gameover.png')
+  bg = loadImage('assets/background-day.png');
+  flapUpImg = loadImage('assets/yellowbird-upflap.png');
+  flapDownImg = loadImage('assets/yellowbird-downflap.png');
+  flapMidImg = loadImage('assets/yellowbird-midflap.png');
+  pipe = loadImage('assets/pipe-green.png');
+  base = loadImage('assets/base.png')
+  gameOver = loadImage('assets/gameover.png')
 }
 
 function setup() {
@@ -18,22 +23,27 @@ function setup() {
   world.gravity.y = 8; // bird falls
 
   bird = new Sprite(100, height / 2, 30, 30);
-  bird.img=flapMidImg
+  bird.img=flapMidImg; // neutral image
 
   pipes = new Group();
   floor = new Sprite(0, height - 20, 400, 125, 'static' );
   floor.img = base;
 
+  scoreLabel = new Sprite(width / 2, 30);
+  scoreLabel.textSize = 32;
+  scoreLabel.text = 'Score: 0';
+  // Make the sprite's box invisible
+  scoreLabel.color = 'rgba(0, 0, 0, 0)'; // fully transparent fill
+  scoreLabel.stroke = 'rgba(0, 0, 0, 0)'; // fully transparent stroke
+  scoreLabel.collider = 'none';
+  // Make the text white
+  scoreLabel.textColor = 'white';
 }
 
 function draw() {
-  image(bg, 0, 0, width, height);
-  fill(255);
-  textSize(32);
-  textAlign(CENTER, TOP);
-  text('Score: ' + score, width / 2, 10);
-
-  bird.x += 3;
+  image(bg, 0, 0, width, height); // background image
+  bird.x += 3; // bird moves forward
+  // camera tracking and item tracking
   camera.x = bird.x;
   floor.x = camera.x;
 
@@ -42,9 +52,12 @@ function draw() {
   }
 
   // Spawn pipes
+  // spawn the first pipe
   if (frameCount === 1) {
     spawnPipePair();
   }
+
+  //spawn pipe every 90s
   if (frameCount % 90 === 0) {
     spawnPipePair();
   }
@@ -54,7 +67,9 @@ function draw() {
     if (pipe.x < -50) pipe.remove();
   }
 
+  // increase score if pipe passed
   for (let pipe of pipes) {
+    // compare coordinate
     if (pipe.passed== false && pipe.x + pipe.w / 2 < bird.x - bird.w / 2) {
       pipe.passed = true;
       score++; 
@@ -72,13 +87,16 @@ function draw() {
     bird.img = flapMidImg; // neutral
     bird.rotation = 0
   }
+  pipes.layer = 0
   
-
   // End game on collision
   if (bird.collides(pipes)|| bird.collides(floor)) {
     noLoop();
     image(gameOver, (width-192)/2, (height-42)/2, 192 , 42);
   }
+
+  scoreLabel.text = 'Score: ' + score;
+  scoreLabel.x = camera.x;
 
 }
 

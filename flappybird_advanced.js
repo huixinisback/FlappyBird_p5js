@@ -1,11 +1,14 @@
+// player sprite
 let bird;
+// game variables
 let pipes;
+let floor;
 let score = 99;
-// store number images
-let numberImages = []
+// store number/score images
+let numberImages = [];
+let scoreDigits;
 
-
-
+// load the image files first 
 function preload(){
     bg = loadImage('assets/background-day.png');
     flapUpImg = loadImage('assets/yellowbird-upflap.png');
@@ -25,17 +28,24 @@ function setup() {
   world.gravity.y = 8; // bird falls
 
   bird = new Sprite(100, height / 2, 30, 30);
-  bird.img=flapMidImg
+  bird.img=flapMidImg;// neutral image
 
   pipes = new Group();
   floor = new Sprite(0, height - 20, 400, 125, 'static' );
   floor.img = base;
-
+  // score
+  scoreDigits = new Group();
+  scoreDigits.collider = 'none';
+  scoreDigits.color = 'rgba(0, 0, 0, 0)';
+  scoreDigits.stroke = 'rgba(0, 0, 0, 0)';
+  scoreDigits.cameraActive = false;
+  scoreDigits.layer = 1000;
 }
 
 function draw() {
-  background = image(bg, 0, 0, width, height);
-  bird.x += 3;
+  background = image(bg, 0, 0, width, height); // background image
+  bird.x += 3; // bird moves forward
+  // camera tracking and item tracking
   camera.x = bird.x;
   floor.x = camera.x;
 
@@ -44,9 +54,12 @@ function draw() {
   }
 
   // Spawn pipes
+  // spawn the first pipe
   if (frameCount === 1) {
     spawnPipePair();
   }
+
+  //spawn pipe every 90 s
   if (frameCount % 90 === 0) {
     spawnPipePair();
   }
@@ -56,6 +69,8 @@ function draw() {
     if (pipe.x < -50) pipe.remove();
   }
 
+  
+  // increase score if pipe passed
   for (let pipe of pipes) {
     if (pipe.passed== false && pipe.x + pipe.w / 2 < bird.x - bird.w / 2) {
       pipe.passed = true;
@@ -79,10 +94,14 @@ function draw() {
   // End game on collision
   if (bird.collides(pipes)|| bird.collides(floor)) {
     noLoop()
-    image(gameOver,(width-192)/2, (height-42)/2, 192 , 42);
-
+    gameOverLabel = new Sprite(width / 2, height / 2, 192, 42);
+    gameOverLabel.img = gameOver;
+    gameOverLabel.collider = 'none';
+    gameOverLabel.color = 'rgba(0,0,0,0)';
+    gameOverLabel.stroke = 'rgba(0,0,0,0)';
+    gameOverLabel.layer = 1000; // draw on top
+    gameOverLabel.x = camera.x;
   }
-
 }
 
 function spawnPipePair() {
@@ -101,14 +120,28 @@ function spawnPipePair() {
 }
 
 function drawScore(x, y, score, digitWidth = 24, digitHeight = 36) {
+  // Clear old digit sprites
+  scoreDigits.removeAll();
+
   let scoreStr = str(score);
   let totalWidth = scoreStr.length * digitWidth;
   let startX = x - totalWidth / 2;
 
   for (let i = 0; i < scoreStr.length; i++) {
     let digit = int(scoreStr[i]);
-    number = image(numberImages[digit], startX + i * digitWidth, y, digitWidth, digitHeight);
+    let digitSprite = new scoreDigits.Sprite(startX + i * digitWidth, y, digitWidth, digitHeight);
+    digitSprite.img = numberImages[digit];
   }
 
+  moveGroup(scoreDigits, camera.x); // keep score centered on camera
+}
+
+function moveGroup(group, targetX, spacing = 24) {
+  let totalWidth = group.length * spacing;
+  let startX = (targetX - totalWidth / 2) + 5;
+
+  for (let i = 0; i < group.length; i++) {
+    group[i].x = startX + i * spacing;
+  }
 }
 

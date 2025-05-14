@@ -18,8 +18,8 @@ function preload(){
     flapDownImg = loadImage('assets/yellowbird-downflap.png');
     flapMidImg = loadImage('assets/yellowbird-midflap.png');
     pipe = loadImage('assets/pipe-green.png');
-    base = loadImage('assets/base.png')
-    gameOver = loadImage('assets/gameover.png')
+    base = loadImage('assets/base.png');
+    gameOver = loadImage('assets/gameover.png');
     // number assets
     for (let i = 0; i <= 9; i++) {
       numberImages[i] = loadImage(`assets/${i}.png`);
@@ -41,7 +41,6 @@ function setup() {
   scoreDigits.collider = 'none';
   scoreDigits.color = 'rgba(0, 0, 0, 0)';
   scoreDigits.stroke = 'rgba(0, 0, 0, 0)';
-  scoreDigits.cameraActive = false;
   scoreDigits.layer = 1000;
 }
 

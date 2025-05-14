@@ -111,7 +111,8 @@ function spawnPipePair() {
   topPipe.rotation = 180
   bottomPipe.img = pipe;
   topPipe.passed = false; // Add to one pipe per pair (top or bottom)
-  pipes.add(topPipe); // add topPipe sprite to group
-  pipes.add(bottomPipe); // add bottomPipe sprite to group
+
+  pipes.add(topPipe);
+  pipes.add(bottomPipe);
   pipes.layer = 0; // The new pipes should be drawn at the lowest layer, so the score and floor will show on top.
 }

@@ -61,7 +61,7 @@ function draw() {
     spawnPipePair();
   }
 
-  //spawn pipe every 90 s
+  //spawn pipe every 1.5 s
   if (frameCount % 90 === 0) {
     spawnPipePair();
   }
@@ -109,7 +109,7 @@ function draw() {
 }
 
 function spawnPipePair() {
-  let gap = 0;
+  let gap = 50;
   let midY = random(200, height - 200); // random(min, max)
 
   let topPipe = new Sprite(bird.x + 300, midY - gap / 2 - 200, 52, 320, 'static');

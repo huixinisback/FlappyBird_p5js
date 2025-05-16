@@ -1,5 +1,4 @@
 let bird;
-let origin;
 let flapMidImg, bg;
 
 function preload() {

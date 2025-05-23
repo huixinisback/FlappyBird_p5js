@@ -10,6 +10,10 @@ let numberImages = [];
 // Image sprites, sprites that display images.
 let scoreDigits;
 let gameOverLabel;
+// sound assets
+let flapSound;
+let pointSound;
+let failSound;
 
 // load the image files first 
 function preload(){
@@ -24,6 +28,11 @@ function preload(){
     for (let i = 0; i <= 9; i++) {
       numberImages[i] = loadImage(`assets/${i}.png`);
     }
+
+    // sound assets
+    flapSound = createAudio('assets/sfx_wing.mp3');
+    pointSound = createAudio('assets/sfx_point.mp3');
+    failSound = createAudio('assets/sfx_die.mp3');
 }
 
 function setup() {
@@ -53,6 +62,7 @@ function draw() {
 
   if (kb.presses('space') || mouse.presses()) {
     bird.vel.y = -5; // flap upward
+    flapSound.play();
   }
 
   // Spawn pipes
@@ -77,6 +87,7 @@ function draw() {
     // compare x-coordinates of player and pipes
     if (pipe.passed== false && pipe.x + pipe.w / 2 < bird.x - bird.w / 2) {
       pipe.passed = true;
+      pointSound.play();
       score++; 
     }
   }
@@ -97,7 +108,7 @@ function draw() {
 
   // End game on collision
   if (bird.collides(pipes)|| bird.collides(floor)) {
-    noLoop()
+    failSound.play();
     gameOverLabel = new Sprite(width / 2, height / 2, 192, 42);
     gameOverLabel.img = gameOver;
     gameOverLabel.collider = 'none';
@@ -105,6 +116,8 @@ function draw() {
     gameOverLabel.stroke = 'rgba(0,0,0,0)';
     gameOverLabel.layer = 1000; // draw on top
     gameOverLabel.x = camera.x;
+
+    noLoop();
   }
 }
 

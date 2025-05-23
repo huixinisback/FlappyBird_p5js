@@ -1,17 +1,9 @@
-// player sprite
-let bird;
-// game variables
+let bird, floor;
 let pipes;
-let floor;
-let score = 0;
+let flapMidImg,flapDownImg, flapUpImg, pipe, bg;
 let startGame = false;
-
-let scoreLabel;
-// Image sprites, sprites that display images.
-let gameOverLabel;
-
 // load the image files first 
-function preload(){
+function preload() {
   bg = loadImage('assets/background-day.png');
   flapUpImg = loadImage('assets/yellowbird-upflap.png');
   flapDownImg = loadImage('assets/yellowbird-downflap.png');
@@ -24,36 +16,32 @@ function preload(){
 
 function setup() {
   new Canvas(400, 600);
-  world.gravity.y = 8; // bird falls
- 
+  world.gravity.y = 10;
+
+  // Floor for bounce
+  floor = new Sprite(200, height - 20, 400, 125, 'static' );
+  floor.img = base;
+
   // Bird with full physics
   bird = new Sprite(width / 2, 200, 30, 30, 'static');
   bird.img = flapMidImg;
   bird.mass = 2;         // heavier = stronger pull from gravity
   bird.drag = 0.02;      // air resistance
   bird.bounciness = 0.5; // how much it bounces when hitting floor
-
+  //Initialise Group
   pipes = new Group();
-  floor = new Sprite(200, height - 20, 400, 125, 'static' );
+  // Floor
+  floor = new Sprite(0, height - 20, 400, 125, 'static' );
   floor.img = base;
 
   //instructions
   startMessageLabel = new Sprite(width/2,height/2 - 50,50,50,'none');
   startMessageLabel.img = startMessage;
-
-  scoreLabel = new Sprite(width / 2, 30);
-  scoreLabel.textSize = 32;
-  scoreLabel.text = 'Score: 0';
-  // Make the sprite's box invisible
-  scoreLabel.color = 'rgba(0, 0, 0, 0)'; // fully transparent fill
-  scoreLabel.stroke = 'rgba(0, 0, 0, 0)'; // fully transparent stroke
-  scoreLabel.collider = 'none';
-  // Make the text white
-  scoreLabel.textColor = 'white';
 }
 
 function draw() {
-  image(bg, 0, 0, width, height); // background image
+  background = image(bg, 0, 0, width, height); // background image
+
   if (kb.presses('space') || mouse.presses()) {
     startGame = true;
     startMessageLabel.visible = false;
@@ -71,32 +59,6 @@ function draw() {
       bird.vel.y = -5; // flap upward
     }
 
-    // Spawn pipes
-    // spawn the first pipe
-    if (frameCount === 1) {
-      spawnPipePair();
-    }
-
-    //spawn pipe every 90s
-    if (frameCount % 90 === 0) {
-      spawnPipePair();
-    }
-
-    // Remove offscreen pipes
-    for (let pipe of pipes) {
-      if (pipe.x < -50) pipe.remove();
-    }
-
-    // increase score if pipe passed
-    for (let pipe of pipes) {
-      // compare x-coordinates of player and pipes
-      if (pipe.passed== false && pipe.x + pipe.w / 2 < bird.x - bird.w / 2) {
-        pipe.passed = true;
-        score++; 
-      }
-      
-    }
-
     // change image according to  flying action/ falling
     if (bird.vel.y < -1) {
       bird.img = flapUpImg; // flying upward
@@ -108,8 +70,24 @@ function draw() {
       bird.img = flapMidImg; // neutral
       bird.rotation = 0
     }
-    
-    // End game on collision
+
+    // Spawn pipes
+    // spawn the first pipe
+    if (frameCount === 1) {
+      spawnPipePair();
+    }
+
+    //spawn pipe every 1.5 s
+    if (frameCount % 90 === 0) {
+      spawnPipePair();
+    }
+
+    // Remove offscreen pipes
+    for (let pipe of pipes) {
+      if (pipe.x < -50) pipe.remove();
+    }
+
+      // End game on collision
     if (bird.collides(pipes)|| bird.collides(floor)) {
       gameOverLabel = new Sprite(width / 2, height / 2, 192, 42);
       gameOverLabel.img = gameOver;
@@ -122,7 +100,6 @@ function draw() {
       noLoop();
 
       setTimeout(()=>{
-        score = 0;
         gameOverLabel.remove();
         pipes.removeAll();
         bird.vel.x = 0;
@@ -136,24 +113,24 @@ function draw() {
         startMessageLabel.y = height/2 - 50;
         loop();
       }, 3000)
+      
     }
-
-    scoreLabel.text = 'Score: ' + score; // update score
-    scoreLabel.x = camera.x; // camera tracking for score
   }
+  
 }
 
+ 
 function spawnPipePair() {
-  let gap = 100; // gap 
-  let midY = random(200, height - 200);
+  let gap = 50;
+  let midY = random(200, height - 200); // random(min, max)
+
   let topPipe = new Sprite(bird.x + 300, midY - gap / 2 - 200, 52, 320, 'static');
   let bottomPipe = new Sprite(bird.x + 300, midY + gap / 2 + 200, 52, 320, 'static');
   topPipe.img = pipe
   topPipe.rotation = 180
   bottomPipe.img = pipe;
   topPipe.passed = false; // Add to one pipe per pair (top or bottom)
-
-  pipes.add(topPipe);
-  pipes.add(bottomPipe);
+  pipes.add(topPipe); // add topPipe sprite to group
+  pipes.add(bottomPipe); // add bottomPipe sprite to group
   pipes.layer = 0; // The new pipes should be drawn at the lowest layer, so the score and floor will show on top.
 }

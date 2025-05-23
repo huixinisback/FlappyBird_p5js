@@ -72,16 +72,10 @@ function draw() {
     if (pipe.x < -50) pipe.remove();
   }
 
-    // End game on collision
-  if (bird.collides(pipes)|| bird.collides(floor)) {
-    noLoop();
-  }
 }
 
-
- 
 function spawnPipePair() {
-  let gap = 0;
+  let gap = 50;
   let midY = random(200, height - 200); // random(min, max)
 
   let topPipe = new Sprite(bird.x + 300, midY - gap / 2 - 200, 52, 320, 'static');
